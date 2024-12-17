@@ -99,7 +99,7 @@ const toggleDropdown = () => {
 };
 
 const navigateToProfile = () => {
-  router.push("/profile");
+  router.push("/profile/id");
 };
 
 const navigateToAdminDashboard = () => {
