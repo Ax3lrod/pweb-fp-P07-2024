@@ -23,6 +23,9 @@
       <NuxtLink to="/admin/laporan/penghuni">
         <button class="btn mb-10 font-[Poppins]">Laporan Penghuni</button>
       </NuxtLink>
+      <NuxtLink to="/admin/penghuni">
+        <button class="btn mb-10 font-[Poppins]">Laporan Pembayaran</button>
+      </NuxtLink>
     </div>
   </div>
   <Footer />

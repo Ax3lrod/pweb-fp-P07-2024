@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Redirect all unknown routes to the 404 error page.
 definePageMeta({
-  layout: "error",
+  layout: false,
 });
 </script>
 

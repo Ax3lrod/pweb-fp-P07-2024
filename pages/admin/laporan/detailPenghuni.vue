@@ -1,23 +1,23 @@
 <template>
     <Navbar />
     <div class="laporan-fasilitas">
-      <h1 class="text-4xl font-bold text-center mb-10 font-[Poppins]">Laporan Fasilitas</h1>
+      <h1 class="text-4xl font-bold text-center mb-10 font-[Poppins]">Laporan Pembayaran</h1>
       <div v-if="loading" class="text-center text-gray-500">
         Memuat laporan...
       </div>
       <div v-if="error" class="text-center text-red-500">
         {{ error }}
       </div>
-      <div v-else-if="facilities && facilities.length > 0" class="facility-list">
-        <div v-for="facility in facilities" :key="facility._id" class="facility-card">
-          <h2 class="text-2xl font-bold">{{ facility.userId.username }}</h2>
-          <p>Pesan: {{ facility.message }}</p>
-          <p>ID: {{ facility._id }}</p>
-          <p>Tanggal Laporan: {{ facility.createdAt }}</p>
+      <div v-else-if="details && details.length > 0" class="detail-list">
+        <div v-for="detail in details" :key="detail._id" class="detail-card">
+          <p><strong>ID:</strong> {{ detail._id }}</p>
+          <p><strong>Status Pembayaran:</strong> {{ detail.StatusPembayaran }}</p>
+          <p><strong>Tanggal Pembayaran:</strong> {{ formatDate(detail.TanggalPembayaran) }}</p>
+          <p><strong>Tagihan Bulan:</strong> {{ detail.TagihanBulan }}</p>
         </div>
       </div>
       <div v-else>
-        <p class="text-center font-[Poppins]">Tidak ada data fasilitas tersedia.</p>
+        <p class="text-center font-[Poppins]">Tidak ada data pembayaran.</p>
       </div>
     </div>
   
@@ -34,8 +34,20 @@
   
   const loading = ref(true);
   const error = ref<string | null>(null);
-  const facilities = ref<{ _id: string; userId: { username: string }; message: string ; createdAt: Date}[]>([]);
+  const details = ref<
+    { 
+      _id: string; 
+      userId: string | null; 
+      StatusPembayaran: string; 
+      TanggalPembayaran: Date; 
+      TagihanBulan: string; 
+    }[]
+  >([]);
   
+  function formatDate(date: string | Date): string {
+    const options: Intl.DateTimeFormatOptions = { year: "numeric", month: "long", day: "numeric" };
+    return new Date(date).toLocaleDateString("id-ID", options);
+  }
   
   onMounted(async () => {
     try {
@@ -44,7 +56,7 @@
         throw new Error(`Gagal memuat data: ${response.status} ${response.statusText}`);
       }
       const data = await response.json();
-      facilities.value = data.reports;
+      details.value = data; 
     } catch (err) {
       error.value = err instanceof Error ? err.message : "Terjadi kesalahan saat memuat data.";
     } finally {
@@ -59,14 +71,14 @@
     padding: 20px;
   }
   
-  .facility-list {
+  .detail-list {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
     justify-content: center;
   }
   
-  .facility-card {
+  .detail-card {
     background-color: #f9f9f9;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -76,18 +88,14 @@
     transition: transform 0.2s;
   }
   
-  .facility-card:hover {
+  .detail-card:hover {
     transform: scale(1.03);
   }
   
-  .facility-card h2 {
-    margin-bottom: 10px;
-    color: #333;
-  }
-  
-  .facility-card p {
+  .detail-card p {
     font-size: 14px;
     color: #555;
+    margin: 5px 0;
   }
   
   .button-group {
