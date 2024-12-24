@@ -1,7 +1,7 @@
 <template>
   <Navbar />
   <div class="laporan-fasilitas">
-    <h1 class="text-4xl font-bold text-center mb-10 font-[Poppins]">Laporan Fasilitas</h1>
+    <h1 class="text-4xl font-bold text-center mb-10 font-[Poppins]">Laporan Pembayaran</h1>
     <div v-if="loading" class="text-center text-gray-500">
       Memuat laporan...
     </div>
@@ -10,9 +10,11 @@
     </div>
     <div v-else-if="facilities && facilities.length > 0" class="facility-list">
       <div v-for="facility in facilities" :key="facility._id" class="facility-card">
-        <p>Pesan: {{ facility.message }}</p>
+        <h2 class="bold">{{ facility.userId }}</h2>
+        <p>Pesan: {{ facility.StatusPembayaran }}</p>
         <p>ID: {{ facility._id }}</p>
-        <p>Tanggal Laporan: {{ facility.createdAt }}</p>
+        <p>Tanggal Laporan: {{ facility.TanggalPembayaran }}</p>
+        <p>Bulan: {{ facility.TagihanBulan }}</p>
       </div>
     </div>
     <div v-else>
@@ -33,11 +35,12 @@ import { ref, onMounted } from "vue";
 
 const loading = ref(true);
 const error = ref<string | null>(null);
-const facilities = ref<{ _id: string; message: string; createdAt: Date, userId:{username: string} }[]>([]);
+const facilities = ref<{ _id: string; userId: string | null; StatusPembayaran: string; TanggalPembayaran: Date; TagihanBulan: string }[]>([]);
+
 
 onMounted(async () => {
   try {
-    const response = await fetch("http://localhost:4000/api/admin/laporan/fasilitas");
+    const response = await fetch("http://localhost:4000/api/admin/penghuni");
     if (!response.ok) {
       throw new Error(`Gagal memuat data: ${response.status} ${response.statusText}`);
     }
