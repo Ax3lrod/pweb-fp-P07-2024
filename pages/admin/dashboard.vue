@@ -1,13 +1,15 @@
 <template>
   <Navbar />
   <div class="dashboard">
-    <h1 class="text-4xl font-bold text-center mb-10 font-[Poppins]">Dashboard Admin</h1>
+    <h1 class="text-4xl font-bold text-center mb-10 font-[Poppins]">
+      Dashboard Admin
+    </h1>
     <div v-if="occupancy" class="stats">
-      <div class="card">
+      <div class="card bg-green-500">
         <h2 class="text-5xl font-bold mb-5 font-[Poppins]">Kamar Kosong</h2>
         <p>{{ occupancy.empty }}</p>
       </div>
-      <div class="card">
+      <div class="card bg-red-500">
         <h2 class="text-5xl font-bold mb-5 font-[Poppins]">Kamar Terisi</h2>
         <p>{{ occupancy.filled }}</p>
       </div>
@@ -38,7 +40,9 @@ const occupancy = ref<{ empty: number; filled: number } | null>(null);
 
 onMounted(async () => {
   try {
-    const response = await fetch('http://localhost:4000/api/admin/dashboard');
+    const response = await fetch(
+      "https://fp-be-ax3lrods-projects.vercel.app/api/admin/dashboard"
+    );
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -48,7 +52,7 @@ onMounted(async () => {
       filled: data.occupancy.filled,
     };
   } catch (error) {
-    console.error('Error fetching dashboard data:', error);
+    console.error("Error fetching dashboard data:", error);
   }
 });
 </script>
@@ -69,7 +73,6 @@ h1 {
 }
 
 .card {
-  background-color: #f9f9f9;
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 50px;

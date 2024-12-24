@@ -59,17 +59,33 @@
           </div>
 
           <!-- Password Input -->
-          <div class="mb-4">
+          <div class="mb-4 relative">
             <label for="password" class="block mb-1 font-medium"
               >Password</label
             >
             <Field
               id="password"
               name="password"
-              type="password"
+              :type="passwordVisible ? 'text' : 'password'"
               placeholder="Enter your password"
               class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-teal-400"
             />
+            <button
+              type="button"
+              @click="togglePasswordVisibility"
+              class="absolute mt-2 right-3"
+            >
+              <Icon
+                v-if="passwordVisible"
+                name="material-symbols:visibility-outline-rounded"
+                size="24"
+              />
+              <Icon
+                v-else
+                name="material-symbols:visibility-off-outline-rounded"
+                size="24"
+              />
+            </button>
             <ErrorMessage name="password" class="text-red-500 text-sm" />
           </div>
 
@@ -112,6 +128,11 @@ const schema = toTypedSchema(
 );
 
 const router = useRouter();
+const passwordVisible = ref(false);
+
+const togglePasswordVisibility = () => {
+  passwordVisible.value = !passwordVisible.value;
+};
 
 // Form submission handler
 const onSubmit = async (values) => {

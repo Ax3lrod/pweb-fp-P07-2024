@@ -4,7 +4,9 @@
     class="flex justify-between items-center p-5"
   >
     <!-- Website Name -->
-    <div class="text-white text-xl font-bold">KosanIT</div>
+    <button class="text-white text-xl font-bold" @click="router.push('/')">
+      KosanIT
+    </button>
 
     <!-- User Dropdown Menu -->
     <div class="relative">

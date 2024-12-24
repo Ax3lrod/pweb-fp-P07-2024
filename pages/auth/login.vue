@@ -11,7 +11,9 @@
           class="object-cover"
         />
       </div>
-      <h1 class="font-bold font-[Poppins] text-center text-6xl text-white">KosanIT</h1>
+      <h1 class="font-bold font-[Poppins] text-center text-6xl text-white">
+        KosanIT
+      </h1>
     </section>
 
     <!-- Right Section -->
@@ -44,17 +46,33 @@
           </div>
 
           <!-- Password Input -->
-          <div class="mb-4">
+          <div class="mb-4 relative">
             <label for="password" class="block mb-1 font-medium"
               >Password</label
             >
             <Field
               id="password"
               name="password"
-              type="password"
+              :type="passwordVisible ? 'text' : 'password'"
               placeholder="Enter your password"
               class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-teal-400"
             />
+            <button
+              type="button"
+              @click="togglePasswordVisibility"
+              class="absolute mt-2 right-3"
+            >
+              <Icon
+                v-if="passwordVisible"
+                name="material-symbols:visibility-outline-rounded"
+                size="24"
+              />
+              <Icon
+                v-else
+                name="material-symbols:visibility-off-outline-rounded"
+                size="24"
+              />
+            </button>
             <ErrorMessage name="password" class="text-red-500 text-sm" />
           </div>
 
@@ -85,6 +103,7 @@
 import { Form, Field, ErrorMessage } from "vee-validate";
 import { z } from "zod";
 import { toTypedSchema } from "@vee-validate/zod";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "~/stores/auth";
 
@@ -98,6 +117,12 @@ const schema = toTypedSchema(
 
 const router = useRouter();
 const auth = useAuthStore();
+const passwordVisible = ref(false);
+
+// Toggle password visibility
+const togglePasswordVisibility = () => {
+  passwordVisible.value = !passwordVisible.value;
+};
 
 // Form submission handler
 const onSubmit = async (values) => {
@@ -115,14 +140,11 @@ const onSubmit = async (values) => {
     );
 
     const result = await response.json();
-    //console.log("Login Response:", result);
 
     // Save to Pinia store and localStorage
     if (result.status === "success") {
       const { id, username, role } = result.data.user;
       const { token } = result.data.token;
-
-      //console.log("Login Success:", result);
 
       // Use Pinia action to store data
       auth.setUser({ id, username, role, token });
@@ -130,7 +152,6 @@ const onSubmit = async (values) => {
       // Redirect to the root page
       router.push("/");
     } else {
-      // Display error message from response or a default message
       alert(result.message || "Login failed. Please try again.");
     }
   } catch (error) {
