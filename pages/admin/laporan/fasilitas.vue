@@ -10,6 +10,7 @@
     </div>
     <div v-else-if="facilities && facilities.length > 0" class="facility-list">
       <div v-for="facility in facilities" :key="facility._id" class="facility-card">
+        <h2 class="bold">{{ facility.userId }}</h2>
         <p>Pesan: {{ facility.message }}</p>
         <p>ID: {{ facility._id }}</p>
         <p>Tanggal Laporan: {{ facility.createdAt }}</p>
