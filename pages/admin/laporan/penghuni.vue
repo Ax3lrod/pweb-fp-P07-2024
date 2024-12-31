@@ -12,7 +12,7 @@
         <div v-for="facility in facilities" :key="facility._id" class="facility-card">
           <p>Pesan: {{ facility.message }}</p>
           <p>ID: {{ facility._id }}</p>
-          <p>Tanggal Laporan: {{ facility.createdAt }}</p>
+          <p>Tanggal Laporan: {{ new Date(facility.createdAt).toLocaleString() }}</p>
         </div>
       </div>
       <div v-else>

@@ -10,10 +10,10 @@
     </div>
     <div v-else-if="facilities && facilities.length > 0" class="facility-list">
       <div v-for="facility in facilities" :key="facility._id" class="facility-card">
-        <h2 class="bold">{{ facility.userId }}</h2>
+        <h2 class="font-bold">{{ facility.userId?.username || 'Nama tidak tersedia' }}</h2>
         <p>Pesan: {{ facility.message }}</p>
         <p>ID: {{ facility._id }}</p>
-        <p>Tanggal Laporan: {{ facility.createdAt }}</p>
+        <p>Tanggal Laporan: {{ new Date(facility.createdAt).toLocaleString() }}</p>
       </div>
     </div>
     <div v-else>
@@ -34,7 +34,7 @@ import { ref, onMounted } from "vue";
 
 const loading = ref(true);
 const error = ref<string | null>(null);
-const facilities = ref<{ _id: string; message: string; createdAt: Date, userId:{username: string} }[]>([]);
+const facilities = ref<{ _id: string; message: string; createdAt: Date; userId: { username: string } | null }[]>([]);
 
 onMounted(async () => {
   try {
@@ -51,6 +51,7 @@ onMounted(async () => {
   }
 });
 </script>
+
 
 <style scoped>
 .laporan-fasilitas {

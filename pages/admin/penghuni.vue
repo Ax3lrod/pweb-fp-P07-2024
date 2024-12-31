@@ -10,11 +10,17 @@
     </div>
     <div v-else-if="facilities && facilities.length > 0" class="facility-list">
       <div v-for="facility in facilities" :key="facility._id" class="facility-card">
-        <h2 class="bold">{{ facility.userId }}</h2>
+        <h2 class="font-bold">{{ facility.userId?.username || 'Nama tidak tersedia' }}</h2>
         <p>Pesan: {{ facility.StatusPembayaran }}</p>
-        <p>ID: {{ facility._id }}</p>
+        <p>ID Transaksi: {{ facility._id }}</p>
         <p>Tanggal Laporan: {{ facility.TanggalPembayaran }}</p>
         <p>Bulan: {{ facility.TagihanBulan }}</p>
+        <button
+          class="delete-btn mt-4"
+          @click="deleteFacility(facility._id)"
+        >
+          Hapus
+        </button>
       </div>
     </div>
     <div v-else>
@@ -35,10 +41,16 @@ import { ref, onMounted } from "vue";
 
 const loading = ref(true);
 const error = ref<string | null>(null);
-const facilities = ref<{ _id: string; userId: string | null; StatusPembayaran: string; TanggalPembayaran: Date; TagihanBulan: string }[]>([]);
-
+const facilities = ref<
+  { _id: string; userId: { username: string }; StatusPembayaran: string; TanggalPembayaran: Date; TagihanBulan: string }[]
+>([]);
 
 onMounted(async () => {
+  await fetchFacilities();
+});
+
+const fetchFacilities = async () => {
+  loading.value = true;
   try {
     const response = await fetch("http://localhost:4000/api/admin/penghuni");
     if (!response.ok) {
@@ -51,7 +63,28 @@ onMounted(async () => {
   } finally {
     loading.value = false;
   }
-});
+};
+
+const deleteFacility = async (userId: string) => {
+  if (confirm("Apakah Anda yakin ingin menghapus penghuni ini?")) {
+    try {
+      const response = await fetch(`http://localhost:4000/api/admin/penghuni/${userId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error(`Gagal menghapus penghuni: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      alert(data.message);
+
+      facilities.value = facilities.value.filter((facility) => facility._id !== userId);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Terjadi kesalahan saat menghapus penghuni.");
+    }
+  }
+};
 </script>
 
 <style scoped>
@@ -110,5 +143,20 @@ onMounted(async () => {
 
 .btn:hover {
   background-color: #0056b3;
+}
+
+.delete-btn {
+  background-color: #e63946;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.delete-btn:hover {
+  background-color: #b00020;
 }
 </style>
