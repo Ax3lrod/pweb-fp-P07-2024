@@ -37,7 +37,7 @@
   
   onMounted(async () => {
     try {
-      const response = await fetch("http://localhost:4000/api/admin/laporan/penghuni");
+      const response = await fetch("https://fp-be-ax3lrods-projects.vercel.app/api/admin/laporan/penghuni");
       if (!response.ok) {
         throw new Error(`Gagal memuat data: ${response.status} ${response.statusText}`);
       }
